@@ -28,11 +28,11 @@ class SophyGeneratorCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $settings = $this->container->get(SettingsInterface::class)['db'];
-        $dbConn = $settings['db'];
+        $dbSettings = $settings->get('db');
 
-        $generator = new SophyGeneratorService($dbConn, $dbConn['database']);
+        $generator = new SophyGeneratorService($dbSettings, $dbSettings['database']);
         $generator->generateStructure();
-        $output->writeln('Success - Se generaron los recursos de la base de datos: ' . $dbConn['database']);
+        $output->writeln('Success - Se generaron los recursos de la base de datos: ' . $dbSettings['database']);
         return 0;
     }
 }
