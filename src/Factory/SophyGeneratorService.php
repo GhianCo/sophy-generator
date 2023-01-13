@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Factory;
+namespace SophyGenerator\Factory;
 
 use Psr\Container\ContainerInterface;
 
