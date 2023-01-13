@@ -27,9 +27,9 @@ class SophyGeneratorService
     {
         $this->validateHasDatabase();
 
-        $this->updateFilesRequiredToConfig();
+        $this->updateFilesRequiredToApp();
 
-        //$this->generateControllerFilesByTable();
+        $this->generateControllerFilesByTable();
         //$this->generateEntityFilesByTable();
         //$this->generateExceptionFilesByTable();
         //$this->generateRepositoryFilesByTable();
@@ -100,7 +100,7 @@ class SophyGeneratorService
     }
 
 
-    function updateFilesRequiredToConfig()
+    function updateFilesRequiredToApp()
     {
 
         /**
@@ -207,17 +207,18 @@ class SophyGeneratorService
 
     function generateControllerFilesByTable()
     {
-        $source = $this->sourceFactory . 'TemplateBase/ObjectbaseController';
+        $source = $this->sourceFactory . 'TemplateBase/ObjectbaseActions';
 
         foreach ($this->allTables as $index => $table) {
-            $target = $this->targetExportSrc . 'Controller/' . ucfirst($index);
+            $target = $this->targetExportApp . ucfirst($index) . '/Application/Actions';
             $this->rcopy($source, $target);
 
             // Replace CRUD Controller Template for New Entity.
             $this->replaceFileContent($target . '/Base.php', $index);
             $this->replaceFileContent($target . '/Create.php', $index);
-            $this->replaceFileContent($target . '/Delete.php', $index);
             $this->replaceFileContent($target . '/GetAll.php', $index);
+            $this->replaceFileContent($target . '/GetByBody.php', $index);
+            $this->replaceFileContent($target . '/GetByQuery.php', $index);
             $this->replaceFileContent($target . '/GetOne.php', $index);
             $this->replaceFileContent($target . '/Update.php', $index);
         }
