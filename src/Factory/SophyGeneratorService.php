@@ -132,8 +132,36 @@ class SophyGeneratorService
 
         $__configRepositories = "<?php " . $__configRepositories . "?>";
 
+        /**
+         * All routes
+         */
+
+        $__configRoutes = PHP_EOL;
+        $__configRoutes .= PHP_EOL;
+
+        $__configRoutes .= 'use Slim\App;' . PHP_EOL;
+        $__configRoutes .= 'use Slim\Interfaces\RouteCollectorProxyInterface as Group;' . PHP_EOL;
+        $__configRoutes .= 'use App\DefaultAction;' . PHP_EOL;
+        $__configRoutes .= PHP_EOL;
+        $__configRoutes .= 'return function (App $app) {' . PHP_EOL;
+        $__configRoutes .= "    \$app->get('/', DefaultAction::class);" . PHP_EOL;
+        $__configRoutes .= PHP_EOL;
+        $__configRoutes .= "    \$app->group('/api', function (Group \$group) {" . PHP_EOL;
+        foreach ($this->allTables as $index => $table) {
+            $__configRoutes .= "        (require __DIR__ . ' /../app/" . ucfirst($index) . "/" . $index . "_route.php')(\$group);" . PHP_EOL;
+        }
+        $__configRoutes .= '    });' . PHP_EOL;
+        $__configRoutes .= PHP_EOL;
+        $__configRoutes .= "    \$app->group('/public', function (Group \$group) {" . PHP_EOL;
+        $__configRoutes .= '    });' . PHP_EOL;
+        $__configRoutes .= '};';
+
+        $__configRoutes .= PHP_EOL;
+
+        $__configRoutes = "<?php " . $__configRoutes . "?>";
 
         $this->_writeFile($__configRepositories, $this->targetExportApp . "repositories.php");
+        $this->_writeFile($__configRoutes, $this->targetExportApp . "routes.php");
     }
 
     function generateControllerFilesByTable()
