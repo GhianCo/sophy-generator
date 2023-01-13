@@ -28,7 +28,7 @@ class SophyGeneratorCommand extends Command
     {
         $database = $this->container->get('settings')['db'];
         $dbConn = $this->container->get('db');
-        $generator = new LarabitGeneratorService($dbConn, $database['name']);
+        $generator = new SophyGeneratorService($dbConn, $database['name']);
         $generator->generateStructure();
         $output->writeln('Success - Se generaron los recursos de la base de datos: ' . $database['name']);
         return 0;

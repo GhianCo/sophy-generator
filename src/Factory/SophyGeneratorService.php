@@ -9,6 +9,7 @@ class SophyGeneratorService
     private $dbConn;
     private $database;
 
+    private $targetExportApp = __DIR__ . '/../../../../../app/';
     private $targetExportConfig = __DIR__ . '/../../../../../config/';
     private $targetExportSrc = __DIR__ . '/../../../../../src/';
 
@@ -28,13 +29,13 @@ class SophyGeneratorService
 
         $this->updateFilesRequiredToConfig();
 
-        $this->generateControllerFilesByTable();
-        $this->generateEntityFilesByTable();
-        $this->generateExceptionFilesByTable();
-        $this->generateRepositoryFilesByTable();
-        $this->generateRouteFilesByTable();
-        $this->generateServiceContainerFilesByTable();
-        $this->generateServiceFilesByTable();
+        //$this->generateControllerFilesByTable();
+        //$this->generateEntityFilesByTable();
+        //$this->generateExceptionFilesByTable();
+        //$this->generateRepositoryFilesByTable();
+        //$this->generateRouteFilesByTable();
+        //$this->generateServiceContainerFilesByTable();
+        //$this->generateServiceFilesByTable();
     }
 
     function validateHasDatabase()
@@ -108,123 +109,26 @@ class SophyGeneratorService
 
         $__configRepositories = PHP_EOL;
         $__configRepositories .= PHP_EOL;
-        foreach ($this->allTables as $index => $table) {
-            $__configRepositories .= "use App\Repository\\" . ucfirst($index) . "Repository;" . PHP_EOL;
-        }
-        $__configRepositories .= "use Psr\Container\ContainerInterface;" . PHP_EOL;
 
-        $__configRepositories .= PHP_EOL;
 
+        $__configRepositories .= 'use DI\ContainerBuilder'. PHP_EOL;
         foreach ($this->allTables as $index => $table) {
-            $__configRepositories .= "\$container['" . $index . "_repository'] = static function (ContainerInterface \$container) {" . PHP_EOL;
-            $__configRepositories .= "    return new " . ucfirst($index) . "Repository(\$container->get('db'));" . PHP_EOL;
-            $__configRepositories .= "};" . PHP_EOL;
+            $__configRepositories .= "use App\\" . ucfirst($index) . "\Domain\\" . ucfirst($index) . "Repository;" . PHP_EOL;
+            $__configRepositories .= "use App\\" . ucfirst($index) . "\Infrastructure\\" . ucfirst($index) . "RepositoryMysql;" . PHP_EOL;
         }
+
+        $__configRepositories .= 'return function (ContainerBuilder $containerBuilder) {'. PHP_EOL;
+        $__configRepositories .= '    $containerBuilder->addDefinitions(['. PHP_EOL;
+        $__configRepositories .= '        ' . ucfirst($index) . 'Repository::class => \DI\autowire(' . ucfirst($index) . 'RepositoryMysql::class)->method(\'setTable\', \'' . ucfirst($index) . '\'),'. PHP_EOL;
+        $__configRepositories .= '    ]);'. PHP_EOL;
+        $__configRepositories .= '};'. PHP_EOL;
 
         $__configRepositories .= PHP_EOL;
 
         $__configRepositories = "<?php " . $__configRepositories . "?>";
 
-        /**
-         * All routes
-         */
 
-        $__configRoutes = PHP_EOL;
-        $__configRoutes .= PHP_EOL;
-
-        $__configRoutes .= "\$app->get('/', 'App\Controller\DefaultController:getHelp');" . PHP_EOL;
-        $__configRoutes .= "\$app->get('/status', 'App\Controller\DefaultController:getStatus');" . PHP_EOL;
-        $__configRoutes .= PHP_EOL;
-        $__configRoutes .= "\$app->group('/api', function () use (\$app) {" . PHP_EOL;
-
-        foreach ($this->allTables as $index => $table) {
-            $__configRoutes .= "    require __DIR__ . '/../src/Route/" . $index . "_route.php'; " . PHP_EOL;
-        }
-
-        $__configRoutes .= "});" . PHP_EOL;
-        $__configRoutes .= PHP_EOL;
-
-        $__configRoutes = "<?php " . $__configRoutes . "?>";
-
-        /**
-         * All services
-         */
-
-        $__configServices = PHP_EOL;
-        $__configServices .= PHP_EOL;
-
-        foreach ($this->allTables as $index => $table) {
-            $__configServices .= "require __DIR__ . '/../src/Service/" . $index . "_service.php';" . PHP_EOL;
-        }
-
-        $__configServices .= PHP_EOL;
-
-        $__configServices = "<?php " . $__configServices . "?>";
-
-        /**
-         * Default controller
-         */
-
-        $__srcControllerDefault = PHP_EOL;
-        $__srcControllerDefault .= PHP_EOL;
-        $__srcControllerDefault .= "namespace App\Controller;" . PHP_EOL;
-        $__srcControllerDefault .= PHP_EOL;
-        $__srcControllerDefault .= "final class DefaultController extends BaseController" . PHP_EOL;
-        $__srcControllerDefault .= "{" . PHP_EOL;
-        $__srcControllerDefault .= "    const API_VERSION = '1.0.0';" . PHP_EOL;
-        $__srcControllerDefault .= PHP_EOL;
-        $__srcControllerDefault .= "    public function getHelp(\$request, \$response)" . PHP_EOL;
-        $__srcControllerDefault .= "    {" . PHP_EOL;
-        $__srcControllerDefault .= "        \$app = \$this->container->get('settings')['app'];" . PHP_EOL;
-        $__srcControllerDefault .= "        \$url = \$app['domain'];" . PHP_EOL;
-        $__srcControllerDefault .= "        \$endpoints = [" . PHP_EOL;
-        foreach ($this->allTables as $index => $table) {
-            $__srcControllerDefault .= "            '" . $index . "' => \$url . '/api/" . $index . "'," . PHP_EOL;
-        }
-        $__srcControllerDefault .= "            'status' => \$url . '/status'," . PHP_EOL;
-        $__srcControllerDefault .= "            'this help' => \$url . ''," . PHP_EOL;
-        $__srcControllerDefault .= "        ];" . PHP_EOL;
-        $__srcControllerDefault .= "        \$data = [" . PHP_EOL;
-        $__srcControllerDefault .= "            'endpoints' => \$endpoints," . PHP_EOL;
-        $__srcControllerDefault .= "            'version' => self::API_VERSION," . PHP_EOL;
-        $__srcControllerDefault .= "            'timestamp' => time()," . PHP_EOL;
-        $__srcControllerDefault .= "        ];" . PHP_EOL;
-        $__srcControllerDefault .= PHP_EOL;
-        $__srcControllerDefault .= "        return \$this->jsonResponse(\$response, 'success', \$data, 200);" . PHP_EOL;
-        $__srcControllerDefault .= "    }" . PHP_EOL;
-        $__srcControllerDefault .= PHP_EOL;
-        $__srcControllerDefault .= "    public function getStatus(\$request, \$response)" . PHP_EOL;
-        $__srcControllerDefault .= "    {" . PHP_EOL;
-        $__srcControllerDefault .= "        \$status = [" . PHP_EOL;
-        $__srcControllerDefault .= "            'stats' => \$this->getDbStats()," . PHP_EOL;
-        $__srcControllerDefault .= "            'MySQL' => 'OK'," . PHP_EOL;
-        $__srcControllerDefault .= "            'version' => self::API_VERSION," . PHP_EOL;
-        $__srcControllerDefault .= "            'timestamp' => time()," . PHP_EOL;
-        $__srcControllerDefault .= "        ];" . PHP_EOL;
-        $__srcControllerDefault .= PHP_EOL;
-        $__srcControllerDefault .= "        return \$this->jsonResponse(\$response, 'success', \$status, 200);" . PHP_EOL;
-        $__srcControllerDefault .= "    }" . PHP_EOL;
-        $__srcControllerDefault .= PHP_EOL;
-        $__srcControllerDefault .= "    private function getDbStats()" . PHP_EOL;
-        $__srcControllerDefault .= "    {" . PHP_EOL;
-        foreach ($this->allTables as $index => $table) {
-            $__srcControllerDefault .= "        \$" . $index . "Service = \$this->container->get('find_" . $index . "_service');" . PHP_EOL;
-        }
-        $__srcControllerDefault .= PHP_EOL;
-        $__srcControllerDefault .= "        return [" . PHP_EOL;
-        foreach ($this->allTables as $index => $table) {
-            $__srcControllerDefault .= "            '" . $index . "s' => count(\$" . $index . "Service->getAll())," . PHP_EOL;
-        }
-        $__srcControllerDefault .= "        ];" . PHP_EOL;
-        $__srcControllerDefault .= "    }" . PHP_EOL;
-        $__srcControllerDefault .= "}" . PHP_EOL;
-
-        $__srcControllerDefault = "<?php " . $__srcControllerDefault . "?>";
-
-        $this->_writeFile($__configRepositories, $this->targetExportConfig . "repositories.php");
-        $this->_writeFile($__configRoutes, $this->targetExportConfig . "routes.php");
-        $this->_writeFile($__configServices, $this->targetExportConfig . "services.php");
-        $this->_writeFile($__srcControllerDefault, $this->targetExportSrc . "Controller/DefaultController.php");
+        $this->_writeFile($__configRepositories, $this->targetExportApp . "repositories.php");
     }
 
     function generateControllerFilesByTable()
