@@ -2,6 +2,7 @@
 
 namespace SophyGenerator\Factory;
 
+use Sophy\Settings\SettingsInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,11 +27,12 @@ class SophyGeneratorCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $database = $this->container->get('settings')['db'];
-        $dbConn = $this->container->get('db');
-        $generator = new SophyGeneratorService($dbConn, $database['name']);
+        $settings = $this->container->get(SettingsInterface::class)['db'];
+        $dbConn = $settings['db'];
+
+        $generator = new SophyGeneratorService($dbConn, $dbConn['database']);
         $generator->generateStructure();
-        $output->writeln('Success - Se generaron los recursos de la base de datos: ' . $database['name']);
+        $output->writeln('Success - Se generaron los recursos de la base de datos: ' . $dbConn['database']);
         return 0;
     }
 }
