@@ -27,7 +27,7 @@ class SophyGeneratorCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $settings = $this->container->get(SettingsInterface::class)['db'];
+        $settings = $this->container->get(SettingsInterface::class);
         $dbSettings = $settings->get('db');
 
         $generator = new SophyGeneratorService($dbSettings, $dbSettings['database']);
