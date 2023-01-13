@@ -118,10 +118,12 @@ class SophyGeneratorService
             $__configRepositories .= "use App\\" . ucfirst($index) . "\Infrastructure\\" . ucfirst($index) . "RepositoryMysql;" . PHP_EOL;
         }
 
+        $__configRepositories .= PHP_EOL;
+
         $__configRepositories .= 'return function (ContainerBuilder $containerBuilder) {' . PHP_EOL;
         $__configRepositories .= '    $containerBuilder->addDefinitions([' . PHP_EOL;
         foreach ($this->allTables as $index => $table) {
-            $__configRepositories .= '        ' . ucfirst($index) . 'Repository::class => \DI\autowire(' . ucfirst($index) . 'RepositoryMysql::class)->method(\'setTable\', \'' . ucfirst($index) . '\'),' . PHP_EOL;
+            $__configRepositories .= '        ' . ucfirst($index) . 'Repository::class => \DI\autowire(' . ucfirst($index) . 'RepositoryMysql::class)->method(\'setTable\', \'' . $index . '\'),' . PHP_EOL;
         }
         $__configRepositories .= '    ]);' . PHP_EOL;
         $__configRepositories .= '};' . PHP_EOL;
