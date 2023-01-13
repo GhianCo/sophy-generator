@@ -184,7 +184,7 @@ class SophyGeneratorService
         $__appDefaultAction .= PHP_EOL;
         $__appDefaultAction .= '        $endpoints = [' . PHP_EOL;
         foreach ($this->allTables as $index => $table) {
-            $__appDefaultAction .= "            '" . $index . "' => \$appSettings['domain'] . '/api/" . $index . "',";
+            $__appDefaultAction .= "            '" . $index . "' => \$appSettings['domain'] . '/api/" . $index . "',". PHP_EOL;
         }
         $__appDefaultAction .= '        ];' . PHP_EOL;
         $__appDefaultAction .= '        $data = [' . PHP_EOL;
