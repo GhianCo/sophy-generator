@@ -107,61 +107,102 @@ class SophyGeneratorService
          * All repositories
          */
 
-        $__configRepositories = PHP_EOL;
-        $__configRepositories .= PHP_EOL;
+        $__appRepositories = PHP_EOL;
+        $__appRepositories .= PHP_EOL;
 
 
-        $__configRepositories .= 'use DI\ContainerBuilder;' . PHP_EOL;
+        $__appRepositories .= 'use DI\ContainerBuilder;' . PHP_EOL;
 
         foreach ($this->allTables as $index => $table) {
-            $__configRepositories .= "use App\\" . ucfirst($index) . "\Domain\\" . ucfirst($index) . "Repository;" . PHP_EOL;
-            $__configRepositories .= "use App\\" . ucfirst($index) . "\Infrastructure\\" . ucfirst($index) . "RepositoryMysql;" . PHP_EOL;
+            $__appRepositories .= "use App\\" . ucfirst($index) . "\Domain\\" . ucfirst($index) . "Repository;" . PHP_EOL;
+            $__appRepositories .= "use App\\" . ucfirst($index) . "\Infrastructure\\" . ucfirst($index) . "RepositoryMysql;" . PHP_EOL;
         }
 
-        $__configRepositories .= PHP_EOL;
+        $__appRepositories .= PHP_EOL;
 
-        $__configRepositories .= 'return function (ContainerBuilder $containerBuilder) {' . PHP_EOL;
-        $__configRepositories .= '    $containerBuilder->addDefinitions([' . PHP_EOL;
+        $__appRepositories .= 'return function (ContainerBuilder $containerBuilder) {' . PHP_EOL;
+        $__appRepositories .= '    $containerBuilder->addDefinitions([' . PHP_EOL;
         foreach ($this->allTables as $index => $table) {
-            $__configRepositories .= '        ' . ucfirst($index) . 'Repository::class => \DI\autowire(' . ucfirst($index) . 'RepositoryMysql::class)->method(\'setTable\', \'' . $index . '\'),' . PHP_EOL;
+            $__appRepositories .= '        ' . ucfirst($index) . 'Repository::class => \DI\autowire(' . ucfirst($index) . 'RepositoryMysql::class)->method(\'setTable\', \'' . $index . '\'),' . PHP_EOL;
         }
-        $__configRepositories .= '    ]);' . PHP_EOL;
-        $__configRepositories .= '};' . PHP_EOL;
+        $__appRepositories .= '    ]);' . PHP_EOL;
+        $__appRepositories .= '};' . PHP_EOL;
 
-        $__configRepositories .= PHP_EOL;
+        $__appRepositories .= PHP_EOL;
 
-        $__configRepositories = "<?php " . $__configRepositories . "?>";
+        $__appRepositories = "<?php " . $__appRepositories . "?>";
 
         /**
          * All routes
          */
 
-        $__configRoutes = PHP_EOL;
-        $__configRoutes .= PHP_EOL;
+        $__appRoutes = PHP_EOL;
+        $__appRoutes .= PHP_EOL;
 
-        $__configRoutes .= 'use Slim\App;' . PHP_EOL;
-        $__configRoutes .= 'use Slim\Interfaces\RouteCollectorProxyInterface as Group;' . PHP_EOL;
-        $__configRoutes .= 'use App\DefaultAction;' . PHP_EOL;
-        $__configRoutes .= PHP_EOL;
-        $__configRoutes .= 'return function (App $app) {' . PHP_EOL;
-        $__configRoutes .= "    \$app->get('/', DefaultAction::class);" . PHP_EOL;
-        $__configRoutes .= PHP_EOL;
-        $__configRoutes .= "    \$app->group('/api', function (Group \$group) {" . PHP_EOL;
+        $__appRoutes .= 'use Slim\App;' . PHP_EOL;
+        $__appRoutes .= 'use Slim\Interfaces\RouteCollectorProxyInterface as Group;' . PHP_EOL;
+        $__appRoutes .= 'use App\DefaultAction;' . PHP_EOL;
+        $__appRoutes .= PHP_EOL;
+        $__appRoutes .= 'return function (App $app) {' . PHP_EOL;
+        $__appRoutes .= "    \$app->get('/', DefaultAction::class);" . PHP_EOL;
+        $__appRoutes .= PHP_EOL;
+        $__appRoutes .= "    \$app->group('/api', function (Group \$group) {" . PHP_EOL;
         foreach ($this->allTables as $index => $table) {
-            $__configRoutes .= "        (require __DIR__ . ' /../app/" . ucfirst($index) . "/" . $index . "_route.php')(\$group);" . PHP_EOL;
+            $__appRoutes .= "        (require __DIR__ . '/../app/" . ucfirst($index) . "/" . $index . "_route.php')(\$group);" . PHP_EOL;
         }
-        $__configRoutes .= '    });' . PHP_EOL;
-        $__configRoutes .= PHP_EOL;
-        $__configRoutes .= "    \$app->group('/public', function (Group \$group) {" . PHP_EOL;
-        $__configRoutes .= '    });' . PHP_EOL;
-        $__configRoutes .= '};';
+        $__appRoutes .= '    });' . PHP_EOL;
+        $__appRoutes .= PHP_EOL;
+        $__appRoutes .= "    \$app->group('/public', function (Group \$group) {" . PHP_EOL;
+        $__appRoutes .= '    });' . PHP_EOL;
+        $__appRoutes .= '};';
 
-        $__configRoutes .= PHP_EOL;
+        $__appRoutes .= PHP_EOL;
 
-        $__configRoutes = "<?php " . $__configRoutes . "?>";
+        $__appRoutes = "<?php " . $__appRoutes . "?>";
 
-        $this->_writeFile($__configRepositories, $this->targetExportApp . "repositories.php");
-        $this->_writeFile($__configRoutes, $this->targetExportApp . "routes.php");
+        /**
+         * Default Action
+         */
+
+        $__appDefaultAction = PHP_EOL;
+        $__appDefaultAction .= PHP_EOL;
+
+        $__appDefaultAction .= 'namespace App;' . PHP_EOL;
+        $__appDefaultAction .= PHP_EOL;
+        $__appDefaultAction .= 'use Psr\Http\Message\ResponseInterface as Response;' . PHP_EOL;
+        $__appDefaultAction .= 'use Sophy\Application\Actions\Action;' . PHP_EOL;
+        $__appDefaultAction .= 'use Sophy\Settings\SettingsInterface;' . PHP_EOL;
+        $__appDefaultAction .= PHP_EOL;
+        $__appDefaultAction .= 'class DefaultAction extends Action' . PHP_EOL;
+        $__appDefaultAction .= '{' . PHP_EOL;
+        $__appDefaultAction .= "    const API_VERSION = '1.0.0';" . PHP_EOL;
+        $__appDefaultAction .= PHP_EOL;
+        $__appDefaultAction .= '    protected function action(): Response' . PHP_EOL;
+        $__appDefaultAction .= '    {' . PHP_EOL;
+        $__appDefaultAction .= '        $settings = $this->container->get(SettingsInterface::class);';
+        $__appDefaultAction .= "        \$appSettings = \$settings->get('app');" . PHP_EOL;
+        $__appDefaultAction .= PHP_EOL;
+        $__appDefaultAction .= '        $endpoints = [' . PHP_EOL;
+        foreach ($this->allTables as $index => $table) {
+            $__appDefaultAction .= "            '" . $index . "' => \$appSettings['domain'] . '/api/" . $index . "',";
+        }
+        $__appDefaultAction .= '        ];' . PHP_EOL;
+        $__appDefaultAction .= '        $data = [' . PHP_EOL;
+        $__appDefaultAction .= "            'endpoints' => \$endpoints," . PHP_EOL;
+        $__appDefaultAction .= "            'version' => self::API_VERSION," . PHP_EOL;
+        $__appDefaultAction .= "            'timestamp' => time()" . PHP_EOL;
+        $__appDefaultAction .= '        ];' . PHP_EOL;
+        $__appDefaultAction .= "        return \$this->respondWithData(\$data, 'Data Services');" . PHP_EOL;
+        $__appDefaultAction .= '    }' . PHP_EOL;
+        $__appDefaultAction .= '}' . PHP_EOL;
+
+        $__appDefaultAction .= PHP_EOL;
+
+        $__appDefaultAction = "<?php " . $__appDefaultAction . "?>";
+
+        $this->_writeFile($__appDefaultAction, $this->targetExportApp . "DefaultAction.php");
+        $this->_writeFile($__appRepositories, $this->targetExportApp . "repositories.php");
+        $this->_writeFile($__appRoutes, $this->targetExportApp . "routes.php");
     }
 
     function generateControllerFilesByTable()
