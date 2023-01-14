@@ -33,8 +33,8 @@ class SophyGeneratorService
         //$this->generateEntityFilesByTable();
         //$this->generateExceptionFilesByTable();
         //$this->generateRepositoryFilesByTable();
-        //$this->generateRouteFilesByTable();
-        //$this->generateServiceContainerFilesByTable();
+        $this->generateRouteFilesByTable();
+        $this->generateServiceContainerFilesByTable();
         //$this->generateServiceFilesByTable();
     }
 
@@ -213,7 +213,6 @@ class SophyGeneratorService
             $target = $this->targetExportApp . ucfirst($index) . '/Application/Actions';
             $this->rcopy($source, $target);
 
-            // Replace CRUD Controller Template for New Entity.
             $this->replaceFileContent($target . '/Base.php', $index);
             $this->replaceFileContent($target . '/Create.php', $index);
             $this->replaceFileContent($target . '/GetAll.php', $index);
@@ -297,8 +296,7 @@ class SophyGeneratorService
     {
         $source = $this->sourceFactory . 'TemplateBase/ObjectbaseRoute.php';
         foreach ($this->allTables as $index => $table) {
-            $target = $this->targetExportSrc . 'Route/' . $index . '_route.php';
-            @mkdir($this->targetExportSrc . 'Route');
+            $target = $this->targetExportApp . ucfirst($index) . '/' . $index . '_route.php';
             copy($source, $target);
             $this->replaceFileContent($target, $index);
         }
@@ -307,12 +305,16 @@ class SophyGeneratorService
 
     function generateServiceContainerFilesByTable()
     {
-        $source = $this->sourceFactory . 'TemplateBase/ObjectbaseService.php';
+        $source = $this->sourceFactory . 'TemplateBase/ObjectbaseServices';
+
         foreach ($this->allTables as $index => $table) {
-            $target = $this->targetExportSrc . 'Service/' . $index . '_service.php';
-            @mkdir($this->targetExportSrc . 'Service');
-            copy($source, $target);
-            $this->replaceFileContent($target, $index);
+            $target = $this->targetExportApp . ucfirst($index) . '/Application/Services';
+            $this->rcopy($source, $target);
+
+            $this->replaceFileContent($target . '/Base.php', $index);
+            $this->replaceFileContent($target . '/CreateService.php', $index);
+            $this->replaceFileContent($target . '/FindService.php', $index);
+            $this->replaceFileContent($target . '/UpdateService.php', $index);
         }
     }
 
@@ -586,7 +588,7 @@ class SophyGeneratorService
     private function rcopy($source, $target)
     {
         if (is_dir($source)) {
-            @mkdir($target);
+            @mkdir($target, 0777, true);
             $d = dir($source);
             while (FALSE !== ($entry = $d->read())) {
                 if ($entry == '.' || $entry == '..') {
