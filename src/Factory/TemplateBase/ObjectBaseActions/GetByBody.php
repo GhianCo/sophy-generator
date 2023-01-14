@@ -12,7 +12,7 @@ class GetByBody extends Base
     protected function action(): Response
     {
         $input = (array)$this->request->getParsedBody();
-        $objectbase = $this->getFindObjectbaseService()->searchByParams($input);
+        $objectbase = $this->getFindService()->searchByParams($input);
 
         return $this->respondWithData($objectbase['data'], 'Lista de objectbasees por body', $objectbase['pagination']);
     }

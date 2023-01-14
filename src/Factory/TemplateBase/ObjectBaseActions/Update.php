@@ -14,7 +14,7 @@ class Update extends Base
         $input = (array)$this->request->getParsedBody();
         $objectbaseId = (int)$this->resolveArg('id');
 
-        $objectbase = $this->getUpdateObjectbaseService()->update($input, $objectbaseId);
+        $objectbase = $this->getUpdateService()->update($input, $objectbaseId);
 
         return $this->respondWithData($objectbase, 'Objectbase actualizado con éxito');
     }

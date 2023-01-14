@@ -12,7 +12,7 @@ class Create extends Base
     protected function action(): Response
     {
         $input = (array)$this->request->getParsedBody();
-        $objectbase = $this->getCreateObjectbaseService()->create($input);
+        $objectbase = $this->getCreateService()->create($input);
 
         return $this->respondWithData($objectbase, 'Objectbase creado con éxito');
     }

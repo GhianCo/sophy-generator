@@ -15,7 +15,7 @@ class GetByQuery extends Base
         $queryParams = $this->request->getQueryParams();
         $querySearch = isset($queryParams['q']) ? $queryParams['q'] : Constants::UNDEFINED;
 
-        $objectbase = $this->getFindObjectbaseService()->getBySearch($querySearch);
+        $objectbase = $this->getFindService()->getBySearch($querySearch);
 
         return $this->respondWithData($objectbase, 'Lista de objectbasees por query');
     }

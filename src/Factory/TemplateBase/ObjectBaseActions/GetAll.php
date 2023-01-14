@@ -15,7 +15,7 @@ class GetAll extends Base
         $page = isset($queryParams['page']) ? $queryParams['page'] : null;
         $perPage = isset($queryParams['perPage']) ? $queryParams['perPage'] : null;
 
-        $objectbase = $this->getFindObjectbaseService()->getObjectbaseesByPage((int)$page, (int)$perPage);
+        $objectbase = $this->getFindService()->getObjectbaseesByPage((int)$page, (int)$perPage);
 
         return $this->respondWithData($objectbase['data'], 'Lista de objectbasees', $objectbase['pagination']);
     }

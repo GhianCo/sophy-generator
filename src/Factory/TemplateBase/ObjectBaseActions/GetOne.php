@@ -12,7 +12,7 @@ class GetOne extends Base
     protected function action(): Response
     {
         $objectbaseId = (int)$this->resolveArg('id');
-        $objectbase = $this->getFindObjectbaseService()->getObjectbase($objectbaseId);
+        $objectbase = $this->getFindService()->getObjectbase($objectbaseId);
 
         return $this->respondWithData($objectbase);
     }

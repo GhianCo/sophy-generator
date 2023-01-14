@@ -2,25 +2,25 @@
 
 namespace App\Objectbase\Application\Actions;
 
-use App\Objectbase\Application\Services\CreateObjectbaseService;
-use App\Objectbase\Application\Services\FindObjectbaseService;
-use App\Objectbase\Application\Services\UpdateObjectbaseService;
+use App\Objectbase\Application\Services\CreateService;
+use App\Objectbase\Application\Services\FindService;
+use App\Objectbase\Application\Services\UpdateService;
 use Sophy\Application\Actions\Action;
 
 abstract class Base extends Action
 {
-    protected function getCreateObjectbaseService()
+    protected function getCreateService()
     {
-        return $this->container->get(CreateObjectbaseService::class);
+        return $this->container->get(CreateService::class);
     }
 
-    protected function getUpdateObjectbaseService()
+    protected function getUpdateService()
     {
-        return $this->container->get(UpdateObjectbaseService::class);
+        return $this->container->get(UpdateService::class);
     }
 
-    protected function getFindObjectbaseService(): FindObjectbaseService
+    protected function getFindService(): FindService
     {
-        return $this->container->get(FindObjectbaseService::class);
+        return $this->container->get(FindService::class);
     }
 }
