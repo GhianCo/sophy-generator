@@ -30,7 +30,7 @@ class SophyGeneratorService
         $this->updateFilesRequiredToApp();
 
         $this->generateControllerFilesByTable();
-        //$this->generateEntityFilesByTable();
+        $this->generateEntityFilesByTable();
         //$this->generateExceptionFilesByTable();
         //$this->generateRepositoryFilesByTable();
         $this->generateRouteFilesByTable();
@@ -184,7 +184,7 @@ class SophyGeneratorService
         $__appDefaultAction .= PHP_EOL;
         $__appDefaultAction .= '        $endpoints = [' . PHP_EOL;
         foreach ($this->allTables as $index => $table) {
-            $__appDefaultAction .= "            '" . $index . "' => \$appSettings['domain'] . '/api/" . $index . "',". PHP_EOL;
+            $__appDefaultAction .= "            '" . $index . "' => \$appSettings['domain'] . '/api/" . $index . "'," . PHP_EOL;
         }
         $__appDefaultAction .= '        ];' . PHP_EOL;
         $__appDefaultAction .= '        $data = [' . PHP_EOL;
@@ -230,12 +230,12 @@ class SophyGeneratorService
         foreach ($this->allTables as $indexTable => $table) {
             $__srcEntity = PHP_EOL;
             $__srcEntity .= PHP_EOL;
-            $__srcEntity .= "namespace App\Entity;" . PHP_EOL;
+            $__srcEntity .= "namespace App\\" . ucfirst($indexTable) . "\Domain\Entities;" . PHP_EOL;
             $__srcEntity .= PHP_EOL;
-            $__srcEntity .= "final class " . ucfirst($indexTable) . PHP_EOL;
+            $__srcEntity .= "use Sophy\Domain\BaseEntity;" . PHP_EOL;
+            $__srcEntity .= PHP_EOL;
+            $__srcEntity .= "final class " . ucfirst($indexTable) . " extends BaseEntity" . PHP_EOL;
             $__srcEntity .= "{" . PHP_EOL;
-            $__srcEntity .= "    protected \$table = '" . $indexTable . "';" . PHP_EOL;
-            $__srcEntity .= "    protected \$primaryKey = '" . $indexTable . "_id';" . PHP_EOL;
             $__srcEntity .= PHP_EOL;
             $__srcEntity .= "    protected \$fillable = [" . PHP_EOL;
             foreach ($table as $indexField => $field) {
@@ -246,25 +246,28 @@ class SophyGeneratorService
             $__srcEntity .= PHP_EOL;
 
             foreach ($table as $indexField => $field) {
+
+                $__srcEntity .= "    public function set" . ucwords($field) . "($" . $field . "){ " . PHP_EOL;
+                $__srcEntity .= "        \$this->setAttribute('" . $field . "', \$" . $field . ");" . PHP_EOL;
+                $__srcEntity .= "    }" . PHP_EOL;
+                $__srcEntity .= PHP_EOL;
+
                 $field = $table[$indexField]->key;
                 $__srcEntity .= "    public function get" . ucwords($field) . "(){ " . PHP_EOL;
                 $__srcEntity .= "        return \$this->getAttribute('" . $field . "');" . PHP_EOL;
                 $__srcEntity .= "    }" . PHP_EOL;
                 $__srcEntity .= PHP_EOL;
-                if ($field != $indexTable . '_id') {
-                    $__srcEntity .= "    public function set" . ucwords($field) . "($" . $field . "){ " . PHP_EOL;
-                    $__srcEntity .= "        \$this->setAttribute('" . $field . "', \$" . $field . ");" . PHP_EOL;
-                    $__srcEntity .= "    }" . PHP_EOL;
-                    $__srcEntity .= PHP_EOL;
-                }
+
             }
             $__srcEntity .= "}" . PHP_EOL;
 
             $__srcEntity = "<?php " . $__srcEntity . "?>";
 
-            @mkdir($this->targetExportSrc . 'Entity');
+            $dir = $this->targetExportApp . ucfirst($indexTable) . '/Domain/Entities';
 
-            $this->_writeFile($__srcEntity, $this->targetExportSrc . "Entity/" . ucfirst($indexTable) . ".php");
+            @mkdir($dir);
+
+            $this->_writeFile($__srcEntity, $dir . '/' . ucfirst($indexTable) . ".php");
         }
     }
 
