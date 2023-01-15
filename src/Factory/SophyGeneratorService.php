@@ -31,7 +31,7 @@ class SophyGeneratorService
 
         $this->generateControllerFilesByTable();
         $this->generateEntityFilesByTable();
-        //$this->generateExceptionFilesByTable();
+        $this->generateExceptionFilesByTable();
         //$this->generateRepositoryFilesByTable();
         $this->generateRouteFilesByTable();
         $this->generateServiceContainerFilesByTable();
@@ -274,8 +274,8 @@ class SophyGeneratorService
     {
         $source = $this->sourceFactory . 'TemplateBase/ObjectbaseException.php';
         foreach ($this->allTables as $index => $table) {
-            $target = $this->targetExportSrc . 'Exception/' . ucfirst($index) . 'Exception.php';
-            @mkdir($this->targetExportSrc . 'Exception');
+            $target = $this->targetExportApp . ucfirst($index) . '/Domain/Exceptions/' . ucfirst($index) . 'Exception.php';
+            @mkdir($this->targetExportApp . ucfirst($index) . '/Domain/Exceptions');
             copy($source, $target);
             $this->replaceFileContent($target, $index);
         }

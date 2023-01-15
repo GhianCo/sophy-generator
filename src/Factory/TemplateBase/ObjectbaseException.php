@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Exception;
+namespace App\Objectbase\Domain\Exceptions;
 
-final class ObjectbaseException extends Base
+use Sophy\Domain\Exceptions\DomainRecordNotFoundException;
+
+class ObjectbaseException extends DomainRecordNotFoundException
 {
 }
