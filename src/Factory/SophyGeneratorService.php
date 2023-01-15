@@ -114,7 +114,7 @@ class SophyGeneratorService
         $__appRepositories .= 'use DI\ContainerBuilder;' . PHP_EOL;
 
         foreach ($this->allTables as $index => $table) {
-            $__appRepositories .= "use App\\" . ucfirst($index) . "\Domain\\" . ucfirst($index) . "Repository;" . PHP_EOL;
+            $__appRepositories .= "use App\\" . ucfirst($index) . "\Domain\\I" . ucfirst($index) . "Repository;" . PHP_EOL;
             $__appRepositories .= "use App\\" . ucfirst($index) . "\Infrastructure\\" . ucfirst($index) . "RepositoryMysql;" . PHP_EOL;
         }
 
@@ -123,7 +123,7 @@ class SophyGeneratorService
         $__appRepositories .= 'return function (ContainerBuilder $containerBuilder) {' . PHP_EOL;
         $__appRepositories .= '    $containerBuilder->addDefinitions([' . PHP_EOL;
         foreach ($this->allTables as $index => $table) {
-            $__appRepositories .= '        ' . ucfirst($index) . 'Repository::class => \DI\autowire(' . ucfirst($index) . 'RepositoryMysql::class)->method(\'setTable\', \'' . $index . '\'),' . PHP_EOL;
+            $__appRepositories .= '        I' . ucfirst($index) . 'Repository::class => \DI\autowire(' . ucfirst($index) . 'RepositoryMysql::class)->method(\'setTable\', \'' . $index . '\'),' . PHP_EOL;
         }
         $__appRepositories .= '    ]);' . PHP_EOL;
         $__appRepositories .= '};' . PHP_EOL;
