@@ -1,31 +1,30 @@
 <?php
 
-namespace App\Repository;
+namespace App\Objectbase\Infrastructure;
 
-use App\Entity\Objectbase;
-use App\Exception\ObjectbaseException;
+use App\Objectbase\Domain\Entities\Objectbase;
+use App\Objectbase\Domain\Exceptions\ObjectbaseException;
+use App\Objectbase\Domain\ObjectbaseRepository;
+use Sophy\Infrastructure\BaseRepositoryMysql;
 
-final class ObjectbaseRepository extends BaseRepository
+class ObjectbaseRepositoryMysql extends BaseRepositoryMysql implements ObjectbaseRepository
 {
-    public function __construct($bdQueryManager)
+    /**
+     * {@inheritdoc}
+     */
+    public function checkAndGetObjectbaseOrFail(int $id): Objectbase
     {
-        parent::__construct($bdQueryManager, 'objectbase');
-    }
 
-    public function checkAndGetObjectbaseOrFail($objectbaseId): Objectbase
-    {
-        $criteria = array(
-            'whereParams' => array(
-                array("field" => "objectbase_id", "value" => $objectbaseId, "operator" => "=")
-            )
+        $whereParams = array(
+            array("field" => "objectbase_id", "value" => $id, "operator" => "=")
         );
 
-        $objectbase = $this->fetchRowByCriteria($criteria);
+        $objectbase = $this->setWhereParams($whereParams)->execQueryRow();
 
         if (!$objectbase) {
-            throw new ObjectbaseException('No se encontró el identificador ' . $objectbaseId . '.', 404);
+            throw new ObjectbaseException('No se encontró el objectbase con id: ' . $id . '.', 404);
         }
+
         return $objectbase;
     }
 }
-?>

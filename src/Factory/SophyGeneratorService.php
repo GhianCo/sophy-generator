@@ -32,7 +32,7 @@ class SophyGeneratorService
         $this->generateControllerFilesByTable();
         $this->generateEntityFilesByTable();
         $this->generateExceptionFilesByTable();
-        //$this->generateRepositoryFilesByTable();
+        $this->generateRepositoryFilesByTable();
         $this->generateRouteFilesByTable();
         $this->generateServiceContainerFilesByTable();
         //$this->generateServiceFilesByTable();
@@ -284,11 +284,15 @@ class SophyGeneratorService
 
     function generateRepositoryFilesByTable()
     {
+        $iSource = $this->sourceFactory . 'TemplateBase/IObjectbaseRepository.php';
         $source = $this->sourceFactory . 'TemplateBase/ObjectbaseRepository.php';
         foreach ($this->allTables as $index => $table) {
-            $target = $this->targetExportSrc . 'Repository/' . ucfirst($index) . 'Repository.php';
-            @mkdir($this->targetExportSrc . 'Repository');
+            @mkdir($this->targetExportApp . ucfirst($index) . '/Infrastructure');
+            $iTarget = $this->targetExportApp . ucfirst($index) . '/Domain/I' . ucfirst($index) . 'Repository.php';
+            $target = $this->targetExportApp . ucfirst($index) . '/Infrastructure/' . ucfirst($index) . 'RepositoryMysql.php';
+            copy($iSource, $iTarget);
             copy($source, $target);
+            $this->replaceFileContent($iTarget, $index);
             $this->replaceFileContent($target, $index);
         }
 
