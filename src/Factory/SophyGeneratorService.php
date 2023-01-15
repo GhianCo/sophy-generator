@@ -252,7 +252,6 @@ class SophyGeneratorService
                 $__srcEntity .= "    }" . PHP_EOL;
                 $__srcEntity .= PHP_EOL;
 
-                $field = $table[$indexField]->key;
                 $__srcEntity .= "    public function get" . ucwords($field) . "(){ " . PHP_EOL;
                 $__srcEntity .= "        return \$this->getAttribute('" . $field . "');" . PHP_EOL;
                 $__srcEntity .= "    }" . PHP_EOL;
