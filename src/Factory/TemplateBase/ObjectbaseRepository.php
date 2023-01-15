@@ -4,10 +4,10 @@ namespace App\Objectbase\Infrastructure;
 
 use App\Objectbase\Domain\Entities\Objectbase;
 use App\Objectbase\Domain\Exceptions\ObjectbaseException;
-use App\Objectbase\Domain\ObjectbaseRepository;
+use App\Objectbase\Domain\IObjectbaseRepository;
 use Sophy\Infrastructure\BaseRepositoryMysql;
 
-class ObjectbaseRepositoryMysql extends BaseRepositoryMysql implements ObjectbaseRepository
+class ObjectbaseRepositoryMysql extends BaseRepositoryMysql implements IObjectbaseRepository
 {
     /**
      * {@inheritdoc}
