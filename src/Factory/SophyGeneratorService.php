@@ -246,7 +246,7 @@ class SophyGeneratorService
             $__srcEntity .= PHP_EOL;
 
             foreach ($table as $indexField => $field) {
-
+                $field = $table[$indexField]->key;
                 $__srcEntity .= "    public function set" . ucwords($field) . "($" . $field . "){ " . PHP_EOL;
                 $__srcEntity .= "        \$this->setAttribute('" . $field . "', \$" . $field . ");" . PHP_EOL;
                 $__srcEntity .= "    }" . PHP_EOL;
