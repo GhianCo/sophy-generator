@@ -264,7 +264,7 @@ class SophyGeneratorService
 
             $dir = $this->targetExportApp . ucfirst($indexTable) . '/Domain/Entities';
 
-            @mkdir($dir);
+            @mkdir($dir, 0777, true);
 
             $this->_writeFile($__srcEntity, $dir . '/' . ucfirst($indexTable) . ".php");
         }
