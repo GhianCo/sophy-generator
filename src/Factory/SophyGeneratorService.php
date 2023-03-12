@@ -289,11 +289,11 @@ class SophyGeneratorService
 
             $__srcEntity = "<?php " . $__srcEntity . "?>";
 
-            $dir = $this->targetExportApp . ucfirst($indexTable) . '/Applications/DTO';
+            $dir = $this->targetExportApp . ucfirst($indexTable) . '/Application/DTO';
 
             @mkdir($dir, 0777, true);
 
-            $this->_writeFile($__srcEntity, $dir . '/' . ucfirst($indexTable) . ".php");
+            $this->_writeFile($__srcEntity, $dir . '/' . ucfirst($indexTable) . "DTO.php");
         }
     }
 
