@@ -31,6 +31,7 @@ class SophyGeneratorService
 
         $this->generateControllerFilesByTable();
         $this->generateEntityFilesByTable();
+        $this->generateDTOFilesByTable();
         $this->generateExceptionFilesByTable();
         $this->generateRepositoryFilesByTable();
         $this->generateRouteFilesByTable();
@@ -263,6 +264,32 @@ class SophyGeneratorService
             $__srcEntity = "<?php " . $__srcEntity . "?>";
 
             $dir = $this->targetExportApp . ucfirst($indexTable) . '/Domain/Entities';
+
+            @mkdir($dir, 0777, true);
+
+            $this->_writeFile($__srcEntity, $dir . '/' . ucfirst($indexTable) . ".php");
+        }
+    }
+
+    function generateDTOFilesByTable()
+    {
+
+        foreach ($this->allTables as $indexTable => $table) {
+            $__srcEntity = PHP_EOL;
+            $__srcEntity .= PHP_EOL;
+            $__srcEntity .= "namespace App\\" . ucfirst($indexTable) . "\Application\DTO;" . PHP_EOL;
+            $__srcEntity .= PHP_EOL;
+            $__srcEntity .= "final class " . ucfirst($indexTable) . "DTO" . PHP_EOL;
+            $__srcEntity .= "{" . PHP_EOL;
+            foreach ($table as $indexField => $field) {
+                $__srcEntity .= "    public $" . $table[$indexField]->key . ";" . PHP_EOL;
+            }
+
+            $__srcEntity .= "}" . PHP_EOL;
+
+            $__srcEntity = "<?php " . $__srcEntity . "?>";
+
+            $dir = $this->targetExportApp . ucfirst($indexTable) . '/Applications/DTO';
 
             @mkdir($dir, 0777, true);
 

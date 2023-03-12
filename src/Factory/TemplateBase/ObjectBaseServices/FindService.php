@@ -3,6 +3,7 @@
 namespace App\Objectbase\Application\Services;
 
 use Sophy\Constants;
+use App\Objectbase\Application\DTO\ObjectbaseDTO;
 
 final class FindService extends Base
 {
@@ -16,7 +17,11 @@ final class FindService extends Base
         }
         $criteria = array('page' => $page, 'perPage' => $perPage);
 
-        return $this->objectbaseRepository->fetchRowsByCriteria($criteria);
+        $objectbaseResult = $this->objectbaseRepository->fetchRowsByCriteria($criteria);
+
+        $objectbaseData = $this->mapper->mapMultiple($objectbaseResult['data'], ObjectbaseDTO::class);
+
+        return array('data'=> $objectbaseData, 'pagination' => $objectbaseResult['pagination']);
     }
 
     public function getAll()
