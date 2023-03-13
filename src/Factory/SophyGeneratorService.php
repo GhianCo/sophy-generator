@@ -216,6 +216,7 @@ class SophyGeneratorService
 
             $this->replaceFileContent($target . '/Base.php', $index);
             $this->replaceFileContent($target . '/Create.php', $index);
+            $this->replaceFileContent($target . '/CreateValidator.php', $index);
             $this->replaceFileContent($target . '/GetAll.php', $index);
             $this->replaceFileContent($target . '/GetByBody.php', $index);
             $this->replaceFileContent($target . '/GetByQuery.php', $index);

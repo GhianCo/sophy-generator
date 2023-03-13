@@ -8,6 +8,7 @@ use App\Objectbase\Application\Actions\GetByQuery;
 use App\Objectbase\Application\Actions\GetByBody;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 use Sophy\Middleware\SessionMiddleware;
+use App\Objectbase\Application\Actions\CreateObjectbaseValidator;
 
 return function (Group $group) {
     $group->group('/objectbase', function (Group $group) {
@@ -16,7 +17,7 @@ return function (Group $group) {
         $group->get('/byQuery', GetByQuery::class);
         $group->get('/{id}', GetOne::class);
 
-        $group->post('', Create::class);
+        $group->post('', Create::class)->add(CreateObjectbaseValidator::class);
         $group->post('/byBody', GetByBody::class);
 
         $group->put('/{id}', Update::class);
